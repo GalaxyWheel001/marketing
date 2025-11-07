@@ -18,7 +18,7 @@ interface RedirectConfig {
   excludedPaths: string[];
 }
 
-const CLOAKING_ENABLED = false;
+const CLOAKING_ENABLED = true;
 
 // Конфигурация редиректов
 function getRedirectConfig(): RedirectConfig {
