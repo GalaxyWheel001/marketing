@@ -4,24 +4,87 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Özel Finansal Sistem: Gizli Algoritma</title>
+   
+   <!-- Meta Pixel Code -->
+   <script>
+   !function(f,b,e,v,n,t,s)
+   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+   n.queue=[];t=b.createElement(e);t.async=!0;
+   t.src=v;s=b.getElementsByTagName(e)[0];
+   s.parentNode.insertBefore(t,s)}(window, document,'script',
+   'https://connect.facebook.net/en_US/fbevents.js');
+   fbq('init', '3408938115920115');
+   fbq('track', 'PageView');
+   </script>
+   <noscript><img height="1" width="1" style="display:none"
+   src="https://www.facebook.com/tr?id=3408938115920115&ev=PageView&noscript=1"
+   /></noscript>
+   <!-- End Meta Pixel Code -->
+   
    <!-- Load Tailwind CSS -->
    <script src="https://cdn.tailwindcss.com"></script>
    <style>
        /* Custom Styling for visual appeal and mobile readiness */
        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900;800&display=swap');
+       
+       * {
+           -webkit-tap-highlight-color: transparent;
+           -webkit-touch-callout: none;
+       }
+       
        body {
            font-family: 'Inter', sans-serif;
            background-color: #0d0d0d; /* Very dark background */
+           margin: 0;
+           padding: 0;
+           min-height: 100vh;
+           overflow-x: hidden;
        }
+       
        .quiz-container {
            max-width: 450px;
-           margin: 2rem auto;
+           width: 100%;
+           margin: 0 auto;
            background: #1c1c1c; /* Dark card */
            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+           min-height: 100vh;
+           display: flex;
+           flex-direction: column;
        }
+       
+       /* Mobile optimizations */
+       @media (max-width: 480px) {
+           .quiz-container {
+               max-width: 100%;
+               margin: 0;
+               border-radius: 0;
+               box-shadow: none;
+           }
+       }
+       
+       @media (min-width: 481px) and (max-width: 768px) {
+           .quiz-container {
+               max-width: 90%;
+               margin: 1rem auto;
+               border-radius: 1rem;
+           }
+       }
+       
        .question-card {
-           min-height: 250px; /* Ensure visual stability across questions */
+           min-height: 200px; /* Reduced for mobile */
+           display: flex;
+           flex-direction: column;
+           justify-content: center;
        }
+       
+       @media (max-width: 480px) {
+           .question-card {
+               min-height: 150px;
+           }
+       }
+       
        .answer-button {
            transition: all 0.2s ease-in-out;
            cursor: pointer;
@@ -29,43 +92,166 @@
            color: #FFD700;
            background-color: #333;
            font-weight: 700;
+           touch-action: manipulation;
+           -webkit-tap-highlight-color: rgba(255, 215, 0, 0.2);
+           min-height: 56px; /* Minimum touch target size */
+           display: flex;
+           align-items: center;
+           justify-content: center;
        }
-       .answer-button:hover {
+       
+       .answer-button:hover,
+       .answer-button:active {
            background-color: #FFD700;
            color: #1c1c1c;
            transform: translateY(-2px);
            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
        }
+       
+       @media (max-width: 480px) {
+           .answer-button {
+               font-size: 0.95rem;
+               padding: 1rem 0.75rem;
+               min-height: 52px;
+           }
+       }
+       
        .back-button, .retry-button {
            transition: all 0.2s ease-in-out;
            border: 1px solid #777;
            color: #aaa;
            background-color: #2a2a2a;
+           touch-action: manipulation;
+           min-height: 44px;
        }
-       .back-button:hover, .retry-button:hover {
+       
+       .back-button:hover, .back-button:active,
+       .retry-button:hover, .retry-button:active {
            background-color: #444;
            color: #fff;
        }
+       
        .retry-button {
             border-color: #10B981; /* Green for retry */
             color: #10B981;
             font-weight: 700;
        }
-       .retry-button:hover {
+       
+       .retry-button:hover,
+       .retry-button:active {
            background-color: #10B981;
            color: #1c1c1c;
        }
+       
        .loader {
            border-top-color: #FFD700;
            -webkit-animation: spin 1s linear infinite;
            animation: spin 1s linear infinite;
        }
+       
        @keyframes spin {
            0% { transform: rotate(0deg); }
            100% { transform: rotate(360deg); }
        }
+       
        .progress-bar-fill {
            transition: width 0.5s ease-in-out;
+       }
+       
+       /* Mobile typography adjustments */
+       @media (max-width: 480px) {
+           h1 {
+               font-size: 1.5rem !important;
+               line-height: 1.3 !important;
+           }
+           
+           h2 {
+               font-size: 1.25rem !important;
+               line-height: 1.3 !important;
+           }
+           
+           .text-3xl {
+               font-size: 1.5rem !important;
+           }
+           
+           .text-2xl {
+               font-size: 1.25rem !important;
+           }
+           
+           .text-xl {
+               font-size: 1.125rem !important;
+           }
+           
+           .text-lg {
+               font-size: 1rem !important;
+           }
+       }
+       
+       /* Mobile spacing adjustments */
+       @media (max-width: 480px) {
+           .quiz-container {
+               padding: 1rem !important;
+           }
+           
+           .mb-6 {
+               margin-bottom: 1rem !important;
+           }
+           
+           .mb-8 {
+               margin-bottom: 1.5rem !important;
+           }
+           
+           .mb-4 {
+               margin-bottom: 1rem !important;
+           }
+           
+           .space-y-4 > * + * {
+               margin-top: 0.75rem !important;
+           }
+       }
+       
+       /* Authority section mobile optimization */
+       @media (max-width: 480px) {
+           .authority-section {
+               flex-direction: column;
+               text-align: center;
+               padding-bottom: 0.75rem !important;
+           }
+           
+           .authority-section svg {
+               margin-right: 0 !important;
+               margin-bottom: 0.5rem;
+           }
+       }
+       
+       /* Scarcity message mobile optimization */
+       @media (max-width: 480px) {
+           #scarcityMessage {
+               padding: 0.75rem !important;
+               font-size: 0.75rem !important;
+           }
+           
+           #countdown {
+               font-size: 1rem !important;
+           }
+       }
+       
+       /* Button text wrapping */
+       .answer-button,
+       .back-button,
+       .retry-button {
+           word-wrap: break-word;
+           white-space: normal;
+           text-align: center;
+           line-height: 1.4;
+       }
+       
+       /* Safe area for notched devices */
+       @supports (padding: max(0px)) {
+           .quiz-container {
+               padding-left: max(1rem, env(safe-area-inset-left));
+               padding-right: max(1rem, env(safe-area-inset-right));
+           }
        }
    </style>
 </head>
@@ -77,30 +263,30 @@
 
 
        <!-- Authority Figure (Aslan Ertürk) Placeholder & Story -->
-       <div class="flex items-center justify-center mb-6 border-b border-yellow-800/50 pb-4">
+       <div class="authority-section flex items-center justify-center mb-4 sm:mb-6 border-b border-yellow-800/50 pb-3 sm:pb-4">
            <!-- Placeholder for Aslan Ertürk's image/icon -->
-           <svg class="w-12 h-12 text-yellow-400 mr-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-           <div>
-               <h2 class="text-xl font-extrabold text-white leading-none">ASLAN ERTÜRK</h2>
-               <p class="text-sm text-yellow-500 font-semibold italic">"Algoritmanın Sırrını Çözdüm."</p>
+           <svg class="w-10 h-10 sm:w-12 sm:h-12 text-yellow-400 mr-3 sm:mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+           <div class="flex-1 min-w-0">
+               <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">ASLAN ERTÜRK</h2>
+               <p class="text-xs sm:text-sm text-yellow-500 font-semibold italic mt-1">"Algoritmanın Sırrını Çözdüm."</p>
            </div>
        </div>
 
 
-       <h1 class="text-3xl font-black text-center mb-2 text-yellow-400">
+       <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-center mb-3 sm:mb-4 text-yellow-400 px-2">
            GİZLİ SİSTEM ERİŞİM TESTİ
        </h1>
-      
+       
        <!-- Scarcity & Dynamic Countdown -->
-       <div id="scarcityMessage" class="text-center mb-4 p-2 bg-red-800/20 rounded-lg">
-           <p class="text-sm font-bold text-red-400">⚠️ SON KONTENJANLAR İÇİN KİŞİSEL KODUNUZU ALIN!</p>
-           <p id="countdown" class="text-lg font-extrabold text-red-300"></p>
+       <div id="scarcityMessage" class="text-center mb-3 sm:mb-4 p-2 sm:p-3 bg-red-800/20 rounded-lg mx-2 sm:mx-0">
+           <p class="text-xs sm:text-sm font-bold text-red-400 mb-1">⚠️ SON KONTENJANLAR İÇİN KİŞİSEL KODUNUZU ALIN!</p>
+           <p id="countdown" class="text-base sm:text-lg font-extrabold text-red-300"></p>
        </div>
 
 
        <!-- Progress Bar -->
-       <div class="w-full bg-gray-700 rounded-full h-2.5 mb-8">
-           <div id="progressBar" class="bg-yellow-500 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+       <div class="w-full bg-gray-700 rounded-full h-2 sm:h-2.5 mb-4 sm:mb-6 md:mb-8 mx-2 sm:mx-0">
+           <div id="progressBar" class="bg-yellow-500 h-2 sm:h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
        </div>
 
 
@@ -110,7 +296,7 @@
        </div>
       
        <!-- Dynamic Stat/Momentum Injection -->
-       <p id="statInjection" class="text-xs text-green-400 mt-4 h-5"></p>
+       <p id="statInjection" class="text-xs sm:text-sm text-green-400 mt-3 sm:mt-4 h-5 px-2 sm:px-0 text-center"></p>
 
 
        <!-- Hidden Loader -->
@@ -323,10 +509,10 @@
            let html = '';
           
            html += `
-               <div class="text-xl sm:text-2xl font-bold text-white mb-8 transition-opacity duration-500">
+               <div class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white mb-4 sm:mb-6 md:mb-8 transition-opacity duration-500 px-2 sm:px-0 leading-relaxed">
                    ${step.question}
                </div>
-               <div class="w-full space-y-4">
+               <div class="w-full space-y-3 sm:space-y-4 px-2 sm:px-0">
            `;
 
 
@@ -336,7 +522,7 @@
               
                html += `
                    <button id="${uniqueId}"
-                       class="${buttonClass} w-full text-lg p-4 font-semibold rounded-lg text-center shadow-lg transition-transform"
+                       class="${buttonClass} w-full text-sm sm:text-base md:text-lg p-3 sm:p-4 font-semibold rounded-lg text-center shadow-lg transition-transform"
                        data-next="${answer.next}"
                        data-type="${answer.type}"
                        onclick="handleAnswer(this)">
@@ -356,7 +542,7 @@
 
            if (!isFirstStep && !isTerminal && !isError) {
                 html += `
-                   <button class="back-button w-full mt-6 text-base p-2 rounded-lg"
+                   <button class="back-button w-full mt-4 sm:mt-6 text-sm sm:text-base p-2 sm:p-3 rounded-lg mx-2 sm:mx-0"
                        onclick="goBack()">
                        <span class="mr-2">←</span> Geri Dön
                    </button>
@@ -445,32 +631,32 @@
 
 
            const successMessage = `
-               <svg class="w-16 h-16 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-               <h2 class="text-3xl font-extrabold text-yellow-400 mb-4">ONAYLANDINIZ! GİZLİ KODUNUZ HAZIR.</h2>
-               <p class="text-lg text-gray-300 mb-6">
+               <svg class="w-12 h-12 sm:w-16 sm:h-16 text-green-400 mx-auto mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+               <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-yellow-400 mb-3 sm:mb-4 px-2">ONAYLANDINIZ! GİZLİ KODUNUZ HAZIR.</h2>
+               <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-4 sm:mb-6 px-2">
                    Tebrikler, **Yüksek Potansiyelli Yatırımcı** olarak onaylandınız. Kazanma yol haritasına erişiminiz sağlandı.
                </p>
-               <p class="text-xl font-black text-white mb-8 bg-gray-700/50 p-3 rounded-lg border-2 border-yellow-400">
+               <p class="text-base sm:text-lg md:text-xl font-black text-white mb-4 sm:mb-6 md:mb-8 bg-gray-700/50 p-3 sm:p-4 rounded-lg border-2 border-yellow-400 mx-2 sm:mx-0">
                    <span class="text-red-400">🚨 SON GÖREV:</span>
-                   <br><span class="text-yellow-400 text-2xl">ASLAN ERTÜRK'e Telegram'dan Mesaj Atın.</span>
-                   <br><small class="text-sm text-red-300 block mt-2">NOT: Acil aktivasyon için 'GİZLİ SİSTEM BAŞLAT' yazıp gönderin. **Şimdi başla ve 200 TL fırsatını kaçırma. Yarın 500 TL olacak!**</small>
+                   <br><span class="text-yellow-400 text-lg sm:text-xl md:text-2xl">ASLAN ERTÜRK'e Telegram'dan Mesaj Atın.</span>
+                   <br><small class="text-xs sm:text-sm text-red-300 block mt-2">NOT: Acil aktivasyon için 'GİZLİ SİSTEM BAŞLAT' yazıp gönderin. **Şimdi başla ve 200 TL fırsatını kaçırma. Yarın 500 TL olacak!**</small>
                </p>
-               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 text-white font-black py-4 px-6 rounded-lg text-xl transition-colors shadow-xl uppercase">
+               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
                    <span class="mr-2">🚀</span> ŞİMDİ ASLAN ERTÜRK'e BAĞLAN
                </a>
            `;
 
 
            const installMessage = `
-               <svg class="w-16 h-16 text-blue-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-               <h2 class="text-3xl font-extrabold text-blue-400 mb-4">DURUM: TELEGRAM KURULUMU GEREKİYOR</h2>
-               <p class="text-lg text-gray-300 mb-6">
+               <svg class="w-12 h-12 sm:w-16 sm:h-16 text-blue-400 mx-auto mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+               <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-blue-400 mb-3 sm:mb-4 px-2">DURUM: TELEGRAM KURULUMU GEREKİYOR</h2>
+               <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-4 sm:mb-6 px-2">
                    Gizli Sisteme erişim için Telegram şarttır. Lütfen önce uygulamayı kurun, ardından aşağıdaki butondan Aslan Ertürk'e mesaj atın.
                </p>
-               <a href="https://telegram.org/dl/" target="_blank" class="w-full block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors shadow-xl mb-4">
+               <a href="https://telegram.org/dl/" target="_blank" class="w-full block bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl mb-3 sm:mb-4 mx-2 sm:mx-0 touch-action: manipulation">
                    TELEGRAM'I KUR (ZORUNLU)
                </a>
-               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 text-white font-black py-4 px-6 rounded-lg text-xl transition-colors shadow-xl uppercase">
+               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
                    KURULUMDAN SONRA: ASLAN ERTÜRK'e MESAJ AT
                </a>
            `;
