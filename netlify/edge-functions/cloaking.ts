@@ -18,6 +18,8 @@ interface RedirectConfig {
   excludedPaths: string[];
 }
 
+const CLOAKING_ENABLED = false;
+
 // Конфигурация редиректов
 function getRedirectConfig(): RedirectConfig {
   return {
@@ -131,6 +133,10 @@ function shouldExcludePath(pathname: string, config: RedirectConfig): boolean {
 // ============================================
 
 export default async (request: Request, context: Context) => {
+  if (!CLOAKING_ENABLED) {
+    return context.next();
+  }
+
   try {
     const url = new URL(request.url);
     const host = request.headers.get("host") || "";
