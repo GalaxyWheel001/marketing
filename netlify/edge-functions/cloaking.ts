@@ -12,23 +12,24 @@ interface BotInfo {
 }
 
 interface RedirectConfig {
-  mainDomain: string;
+  advertisingDomain: string; // Рекламная ссылка (всегда редиректит на целевой домен)
+  targetDomain: string; // Целевой домен (где показывается квиз)
   botRedirectUrl: string;
-  realUserRedirectUrl: string;
   excludedPaths: string[];
 }
 
 // Конфигурация редиректов
 function getRedirectConfig(): RedirectConfig {
   return {
-    // Рекламная страница (входная точка)
-    mainDomain: "penalibabasi.netlify.app",
+    // Рекламная ссылка - вставляется в рекламные кабинеты
+    // ВСЕГДА редиректит реальных пользователей на целевой домен
+    advertisingDomain: "penalibabasi.netlify.app",
     
-    // URL для редиректа ботов/модераторов (безопасная страница)
+    // Целевой домен - здесь показывается квиз
+    targetDomain: "aslanerturk.com",
+    
+    // Отдельная страница для ботов (фейковые трафик-боты, антифрод-редирект)
     botRedirectUrl: "https://yalanyokgaming.netlify.app",
-    
-    // URL для редиректа реальных пользователей (целевая страница)
-    realUserRedirectUrl: "https://aslanerturk.com",
     
     // Исключенные пути (пропускаются без проверки)
     excludedPaths: [
@@ -124,22 +125,6 @@ function shouldExcludePath(pathname: string, config: RedirectConfig): boolean {
   );
 }
 
-// Получение целевого URL для редиректа реальных пользователей
-function getTargetUrl(request: Request, config: RedirectConfig): string {
-  const url = new URL(request.url);
-  
-  // Всегда редиректим реальных пользователей на целевую страницу
-  // Сохраняем путь и параметры запроса, если они есть
-  const pathAndQuery = url.pathname + url.search;
-  
-  // Если путь не пустой и не корневой, добавляем его к целевому URL
-  if (pathAndQuery && pathAndQuery !== '/') {
-    return `${config.realUserRedirectUrl}${pathAndQuery}`;
-  }
-  
-  // Иначе просто редиректим на целевую страницу
-  return config.realUserRedirectUrl;
-}
 
 // ============================================
 // Основная Edge Function
@@ -162,16 +147,38 @@ export default async (request: Request, context: Context) => {
     const botInfo = isBot(request);
     
     if (botInfo.isBot) {
-      console.log(`🤖 Bot detected: ${botInfo.type} - ${botInfo.userAgent} - IP: ${botInfo.ip}`);
+      console.log(`🤖 Bot detected: ${botInfo.type} - ${botInfo.userAgent} - IP: ${botInfo.ip} - Host: ${host}`);
       
-      // Ботов редиректим на безопасную страницу
+      // Ботов редиректим на отдельную страницу для ботов
       return Response.redirect(config.botRedirectUrl, 302);
     }
     
-    // Для реальных пользователей - всегда редиректим на целевую страницу
-    // (независимо от того, пришли они с penalibabasi.netlify.app или другого домена)
-    const targetUrl = getTargetUrl(request, config);
-    return Response.redirect(targetUrl, 302);
+    // Проверяем, является ли текущий домен рекламной ссылкой
+    // Точное совпадение или домен заканчивается на рекламный домен
+    const isAdvertisingDomain = host === config.advertisingDomain || 
+                                host.endsWith(`.${config.advertisingDomain}`);
+    
+    if (isAdvertisingDomain) {
+      // Если пользователь на рекламной ссылке (penalibabasi.netlify.app)
+      // ВСЕГДА редиректим на целевой домен (aslanerturk.com), где показывается квиз
+      const targetUrl = `https://${config.targetDomain}${url.pathname}${url.search}`;
+      console.log(`👤 Real user from advertising domain ${host} → redirecting to ${targetUrl}`);
+      return Response.redirect(targetUrl, 302);
+    }
+    
+    // Если пользователь уже на целевом домене (aslanerturk.com или www.aslanerturk.com) - показываем квиз
+    // Точное совпадение или домен заканчивается на целевой домен
+    const isTargetDomain = host === config.targetDomain || 
+                          host === `www.${config.targetDomain}` ||
+                          host.endsWith(`.${config.targetDomain}`);
+    
+    if (isTargetDomain) {
+      console.log(`👤 Real user on target domain ${host} - showing quiz content`);
+      return context.next();
+    }
+    
+    // Для всех остальных случаев - пропускаем дальше
+    return context.next();
   } catch (error) {
     // В случае ошибки - пропускаем запрос дальше
     console.error("Error in cloaking function:", error);
