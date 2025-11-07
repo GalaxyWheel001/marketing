@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Özel Finansal Sistem: Gizli Algoritma</title>
+   <!-- Load Tailwind CSS -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   <style>
+       /* Custom Styling for visual appeal and mobile readiness */
+       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900;800&display=swap');
+       body {
+           font-family: 'Inter', sans-serif;
+           background-color: #0d0d0d; /* Very dark background */
+       }
+       .quiz-container {
+           max-width: 450px;
+           margin: 2rem auto;
+           background: #1c1c1c; /* Dark card */
+           box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+       }
+       .question-card {
+           min-height: 250px; /* Ensure visual stability across questions */
+       }
+       .answer-button {
+           transition: all 0.2s ease-in-out;
+           cursor: pointer;
+           border: 2px solid #FFD700; /* Gold border */
+           color: #FFD700;
+           background-color: #333;
+           font-weight: 700;
+       }
+       .answer-button:hover {
+           background-color: #FFD700;
+           color: #1c1c1c;
+           transform: translateY(-2px);
+           box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+       }
+       .back-button, .retry-button {
+           transition: all 0.2s ease-in-out;
+           border: 1px solid #777;
+           color: #aaa;
+           background-color: #2a2a2a;
+       }
+       .back-button:hover, .retry-button:hover {
+           background-color: #444;
+           color: #fff;
+       }
+       .retry-button {
+            border-color: #10B981; /* Green for retry */
+            color: #10B981;
+            font-weight: 700;
+       }
+       .retry-button:hover {
+           background-color: #10B981;
+           color: #1c1c1c;
+       }
+       .loader {
+           border-top-color: #FFD700;
+           -webkit-animation: spin 1s linear infinite;
+           animation: spin 1s linear infinite;
+       }
+       @keyframes spin {
+           0% { transform: rotate(0deg); }
+           100% { transform: rotate(360deg); }
+       }
+       .progress-bar-fill {
+           transition: width 0.5s ease-in-out;
+       }
+   </style>
+</head>
+<body>
+
+
+   <!-- Main Quiz Container -->
+   <div id="app" class="quiz-container p-6 sm:p-8 rounded-xl text-white">
+
+
+       <!-- Authority Figure (Aslan Ertürk) Placeholder & Story -->
+       <div class="flex items-center justify-center mb-6 border-b border-yellow-800/50 pb-4">
+           <!-- Placeholder for Aslan Ertürk's image/icon -->
+           <svg class="w-12 h-12 text-yellow-400 mr-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+           <div>
+               <h2 class="text-xl font-extrabold text-white leading-none">ASLAN ERTÜRK</h2>
+               <p class="text-sm text-yellow-500 font-semibold italic">"Algoritmanın Sırrını Çözdüm."</p>
+           </div>
+       </div>
+
+
+       <h1 class="text-3xl font-black text-center mb-2 text-yellow-400">
+           GİZLİ SİSTEM ERİŞİM TESTİ
+       </h1>
+      
+       <!-- Scarcity & Dynamic Countdown -->
+       <div id="scarcityMessage" class="text-center mb-4 p-2 bg-red-800/20 rounded-lg">
+           <p class="text-sm font-bold text-red-400">⚠️ SON KONTENJANLAR İÇİN KİŞİSEL KODUNUZU ALIN!</p>
+           <p id="countdown" class="text-lg font-extrabold text-red-300"></p>
+       </div>
+
+
+       <!-- Progress Bar -->
+       <div class="w-full bg-gray-700 rounded-full h-2.5 mb-8">
+           <div id="progressBar" class="bg-yellow-500 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+       </div>
+
+
+       <!-- Dynamic Content Area -->
+       <div id="quizContent" class="question-card flex flex-col justify-center items-center text-center">
+           <!-- Content rendered by JavaScript -->
+       </div>
+      
+       <!-- Dynamic Stat/Momentum Injection -->
+       <p id="statInjection" class="text-xs text-green-400 mt-4 h-5"></p>
+
+
+       <!-- Hidden Loader -->
+       <div id="loader" class="hidden flex justify-center items-center py-8">
+           <div class="loader ease-linear rounded-full border-4 border-t-4 h-12 w-12 border-gray-200"></div>
+       </div>
+   </div>
+
+
+   <script>
+       // Global state for the quiz
+       let currentStep = 1;
+       let history = []; // Tracks previous steps for 'Geri Dön'
+       let isRedirecting = false;
+       let quizStartTime = Date.now();
+       const INITIAL_COUNTDOWN_MINUTES = 30; // Simulated timer
+
+
+       // --- DOM Elements ---
+       const quizContent = document.getElementById('quizContent');
+       const loader = document.getElementById('loader');
+       const progressBar = document.getElementById('progressBar');
+       const statInjection = document.getElementById('statInjection');
+       const countdownElement = document.getElementById('countdown');
+
+
+       // --- Configuration & Content (Turkish) ---
+       const QUIZ_FLOW = {
+           1: {
+               // HIGH AFFIRMATION 1: Easy "Yes" for desire.
+               question: "Gelirinizi artırarak kendinize ve ailenize daha konforlu bir hayat sunmak istiyor musunuz?",
+               answers: [
+                   { text: "EVET, KESİNLİKLE!", next: '1B', type: 'yes' },
+                   { text: "Şimdilik hayır.", next: 'error_low_desire', type: 'no' }
+               ],
+               progress: 10,
+               tag: 'easy_affirmation_1'
+           },
+           '1B': {
+               // HIGH AFFIRMATION 2: Easy "Yes" for taking action.
+               question: "Haftada sadece 30 dakikanızı ayırarak, binlerce TL kazanma potansiyeli olan bir sisteme hemen dahil olmaya istekli misiniz?",
+               answers: [
+                   { text: "HEMEN BAŞLAYALIM!", next: '1C', type: 'yes' },
+                   { text: "Emin değilim.", next: 'error_low_desire', type: 'no' }
+               ],
+               progress: 25,
+               tag: 'easy_affirmation_2'
+           },
+           '1C': {
+               // FTD Commitment Check - SOFT/Compliance Safe (Qualification Step 1)
+               // Explicit 200 TL mention + 500 TL scarcity threat.
+               question: "BU FIRSAT SADECE BUGÜNE ÖZEL: Sadece **200 TL** gibi küçük bir başlangıç sermayesi koyarak 10.000 TL ve üstünü kazanmaya hazırsanız 'Evet' deyin. (Şimdi başlamazsanız giriş 500 TL'ye yükselecektir!)",
+               answers: [
+                   { text: "Evet, 200 TL Sermayem Hazır.", next: '1C_Relate', type: 'yes' },
+                   { text: "Şu an sermaye ayıramam.", next: 'error_budget', type: 'no' }
+               ],
+               progress: 45,
+               tag: 'ftd_soft_check'
+           },
+           '1C_Relate': {
+               // NEW: Aslan Ertürk Empathy Interstitial
+               question: 'Aslan Ertürk\'ten Not: "Şu an şüphe duyduğunuzu biliyorum, ben de bu işe ilk başladığımda aynı tereddütleri yaşadım. Ancak bu sistemi çözdükten sonra her şey değişti. Bu yüzden sizi anlıyorum ve artık şüpheyi bırakıp kazanma kararlılığınızı görmek istiyorum."',
+               answers: [
+                   { text: "Şüphe bitti, Yüzde Yüz Kararlıyım!", next: '2A', type: 'yes' }
+               ],
+               progress: 60,
+               tag: 'aslan_empathy_note'
+           },
+           '2A': {
+               // Trust Check (Qualification Step 2) - Authority and Skepticism
+               question: "Aslan Ertürk'ün bu *gizli algoritmanın sırrını çözdüğüne* ve size gösterilen hedefe nişan almanın garanti olduğuna inanıyor musunuz?",
+               answers: [
+                   { text: "Evet, bu fırsata güveniyorum.", next: '2B', type: 'yes' },
+                   { text: "Önce kanıt görmeliyim.", next: '2A_Trust', type: 'no_skeptic' }
+               ],
+               progress: 70,
+               tag: 'trust_check_authority'
+           },
+           '2A_Trust': {
+                // Trust builder using Authority quote (The "Aslan's Story")
+               question: 'Aslan Ertürk\'ten Gelen Mesaj: "Korku, kazancın tek düşmanıdır. Başlamak için sadece güven ve kararlılık gerekir. Sistemi kullanmaya **artık** kararlı mısınız?"',
+               answers: [
+                   { text: "KESİNLİKLE KARARLIYIM!", next: '2B', type: 'yes' },
+                   { text: "Hala tam emin değilim.", next: 'error', type: 'no' }
+               ],
+               progress: 75,
+               tag: 'authority_close'
+           },
+           '2B': {
+               // Demographic Check (For salesman segmentation)
+               question: "Size en uygun yol haritasını oluşturmak için, lütfen hangi yaş grubunda olduğunuzu seçin:",
+               answers: [
+                   { text: "20-35 Yaş (Hızlı Kazanma İsteği)", next: '3', type: 'dem_young' },
+                   { text: "36-55 Yaş (Gelecek Kaygısı)", next: '3', type: 'dem_mid' },
+                   { text: "55+ Yaş (Emeklilik/Ek Gelir)", next: '3', type: 'dem_old' }
+               ],
+               progress: 85,
+               tag: 'demographic_capture'
+           },
+           3: {
+               // High Intent / Final RD Mindset Check (Obsession Check) & Telegram Call-to-Action
+               question: "Kazanmaya başladıktan sonra, parayı çekip bırakmak yerine, kazancınızı katlayarak (RD) sistemi sürekli kullanıp hayatınızı tamamen mi değiştireceksiniz?",
+               answers: [
+                   { text: "Mutlaka! Her seferinde katlayarak devam edeceğim!", next: 'redirect', type: 'yes' },
+                   { text: "Sadece ilk kazancı çekerim.", next: 'error', type: 'no' } // Low recurrence/quality exit
+               ],
+               progress: 95,
+               tag: 'rd_quality'
+           },
+           'error_budget': {
+               // Low FTD budget drop/fail state (NON-TERMINAL - User can retry)
+               question: "Üzgünüz. Bu sistem, sadece **200 TL** gibi küçük bir başlangıç sermayesi (ayrılmış fon) olan yüksek potansiyelli yatırımcılar için rezerve edilmiştir. Bugün bu fırsatı kaçırırsanız giriş ücreti 500 TL olacaktır.",
+               answers: [
+                   { text: "Bütçeyi Ayarladım, Tekrar Dene!", next: '1C', type: 'retry' }
+               ],
+               tag: 'exit_low_budget',
+               isTerminal: false, // Override isTerminal for controlled retry flow
+               isError: true // Mark as error step
+           },
+            'error_low_desire': {
+               // Low FTD budget drop/fail state
+               question: "Bu, sadece *hayatını değiştirmek* zorunda olanların girebileceği çok özel bir gruptur. Sizin için henüz doğru zaman değil.",
+               answers: [],
+               tag: 'exit_low_desire',
+               isTerminal: true
+           },
+           'error': {
+               // Low Intent Drop/Fail State (Not warm enough or no RD desire)
+               question: "Anlıyoruz. Bu fırsat, sadece **sürekli kazanmaya** ve hayatını değiştirmeye *yüzde yüz* kararlı olanlar için tasarlanmıştır. Şimdilik bu size uygun değil.",
+               answers: [],
+               tag: 'exit_low_intent',
+               isTerminal: true
+           }
+       };
+      
+       const STAT_MESSAGES = [
+           "✅ İstatistik: Sistemimizi kullananların %99'u ilk gün 5000 TL'yi aştı!",
+           "🔥 Gizli Algoritma ile dün 112 kullanıcı başlangıç sermayesini 10.000 TL'nin üzerine çıkardı!",
+           "⏳ Kaybedilen her saniye, yüzlerce TL'lik kazanç fırsatını kaçırmak demektir."
+       ];
+
+
+       // --- Utility Functions ---
+      
+       /** Updates the progress bar visually. */
+       function updateProgress(percentage) {
+           progressBar.style.width = `${percentage}%`;
+       }
+      
+       /** Starts the simulated countdown timer */
+       function startCountdown() {
+           const expiry = quizStartTime + (INITIAL_COUNTDOWN_MINUTES * 60 * 1000);
+          
+           const interval = setInterval(() => {
+               const now = Date.now();
+               const remaining = expiry - now;
+
+
+               if (remaining <= 0) {
+                   clearInterval(interval);
+                   countdownElement.textContent = "Süre Doldu! Erişim Kapandı.";
+                   return;
+               }
+
+
+               const minutes = Math.floor(remaining / 60000);
+               const seconds = Math.floor((remaining % 60000) / 1000);
+
+
+               countdownElement.textContent = `Süreniz: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+           }, 1000);
+       }
+
+
+
+
+       /** Injects a positive message to build momentum. */
+       function injectStat() {
+           const randomIndex = Math.floor(Math.random() * STAT_MESSAGES.length);
+           statInjection.textContent = STAT_MESSAGES[randomIndex];
+           statInjection.classList.remove('h-5');
+           setTimeout(() => {
+               statInjection.classList.add('h-5');
+               statInjection.textContent = ''; // Clear after a brief display
+           }, 3000);
+       }
+
+
+       /**
+        * Renders the current step's content to the screen.
+        * @param {string|number} stepKey - Key in the QUIZ_FLOW object.
+        */
+       function renderStep(stepKey) {
+           const step = QUIZ_FLOW[stepKey];
+           if (!step) return;
+
+
+           // Only push to history if not moving to an error state and not rendering an error state
+           if (currentStep !== stepKey && !step.isError && !QUIZ_FLOW[currentStep]?.isError && currentStep !== 1) {
+                history.push(currentStep);
+           }
+          
+           currentStep = stepKey;
+          
+           if (step.progress) {
+               updateProgress(step.progress);
+           }
+
+
+           let html = '';
+          
+           html += `
+               <div class="text-xl sm:text-2xl font-bold text-white mb-8 transition-opacity duration-500">
+                   ${step.question}
+               </div>
+               <div class="w-full space-y-4">
+           `;
+
+
+           step.answers.forEach((answer, index) => {
+               const uniqueId = `${stepKey}-${index}`;
+               const buttonClass = answer.type === 'retry' ? 'retry-button' : 'answer-button';
+              
+               html += `
+                   <button id="${uniqueId}"
+                       class="${buttonClass} w-full text-lg p-4 font-semibold rounded-lg text-center shadow-lg transition-transform"
+                       data-next="${answer.next}"
+                       data-type="${answer.type}"
+                       onclick="handleAnswer(this)">
+                       ${answer.text}
+                   </button>
+               `;
+           });
+
+
+           html += `</div>`;
+          
+           // Add Back Button Logic
+           const isFirstStep = stepKey === 1;
+           const isTerminal = step.isTerminal || false;
+           const isError = step.isError || false; // Check if it's an error screen
+
+
+           if (!isFirstStep && !isTerminal && !isError) {
+                html += `
+                   <button class="back-button w-full mt-6 text-base p-2 rounded-lg"
+                       onclick="goBack()">
+                       <span class="mr-2">←</span> Geri Dön
+                   </button>
+               `;
+           }
+
+
+           quizContent.style.opacity = '0';
+           setTimeout(() => {
+               quizContent.innerHTML = html;
+               quizContent.style.opacity = '1';
+           }, 200);
+
+
+           loader.classList.add('hidden');
+       }
+      
+       /** Handles navigation back to the previous step. */
+       function goBack() {
+           if (history.length > 0) {
+               // Get the last step from history and navigate
+               const previousStep = history.pop();
+               renderStep(previousStep);
+           } else {
+               // If history is empty, ensure we are at step 1
+               renderStep(1);
+           }
+       }
+
+
+       /**
+        * Handles button click and advances the quiz.
+        * @param {HTMLElement} button - The button element clicked.
+        */
+       function handleAnswer(button) {
+           const nextStep = button.getAttribute('data-next');
+           const answerType = button.getAttribute('data-type');
+
+
+           if (isRedirecting) return;
+
+
+           quizContent.style.opacity = '0';
+           loader.classList.remove('hidden');
+          
+           // History is managed in renderStep now for better control on back/forward flow
+
+
+           // Track 'Evet' or 'Mutlaka' instances
+           if (answerType.includes('yes')) {
+               injectStat();
+           }
+
+
+           // Process next step
+           setTimeout(() => {
+               if (nextStep === 'redirect') {
+                   handleRedirect(answerType === 'yes_warn');
+               } else if (nextStep.startsWith('error')) {
+                   // Render error state, history management happens inside renderStep
+                   renderStep(nextStep);
+               } else {
+                   renderStep(nextStep);
+               }
+           }, 500);
+       }
+
+
+       /**
+        * Final step: Redirect to Telegram channel with user-warming message.
+        * @param {boolean} needsInstall - Whether the user needs to install Telegram first.
+        */
+       function handleRedirect(needsInstall) {
+           isRedirecting = true;
+           updateProgress(100);
+           history = []; // Clear history
+
+
+           // Hide scarcity message and clean up stat injection
+           document.getElementById('scarcityMessage').classList.add('hidden');
+           statInjection.classList.add('hidden');
+
+
+           const telegramUsername = 'AslanErturk'; // Replace with actual Telegram username
+           const redirectLink = `https://t.me/${telegramUsername}`;
+
+
+           const successMessage = `
+               <svg class="w-16 h-16 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+               <h2 class="text-3xl font-extrabold text-yellow-400 mb-4">ONAYLANDINIZ! GİZLİ KODUNUZ HAZIR.</h2>
+               <p class="text-lg text-gray-300 mb-6">
+                   Tebrikler, **Yüksek Potansiyelli Yatırımcı** olarak onaylandınız. Kazanma yol haritasına erişiminiz sağlandı.
+               </p>
+               <p class="text-xl font-black text-white mb-8 bg-gray-700/50 p-3 rounded-lg border-2 border-yellow-400">
+                   <span class="text-red-400">🚨 SON GÖREV:</span>
+                   <br><span class="text-yellow-400 text-2xl">ASLAN ERTÜRK'e Telegram'dan Mesaj Atın.</span>
+                   <br><small class="text-sm text-red-300 block mt-2">NOT: Acil aktivasyon için 'GİZLİ SİSTEM BAŞLAT' yazıp gönderin. **Şimdi başla ve 200 TL fırsatını kaçırma. Yarın 500 TL olacak!**</small>
+               </p>
+               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 text-white font-black py-4 px-6 rounded-lg text-xl transition-colors shadow-xl uppercase">
+                   <span class="mr-2">🚀</span> ŞİMDİ ASLAN ERTÜRK'e BAĞLAN
+               </a>
+           `;
+
+
+           const installMessage = `
+               <svg class="w-16 h-16 text-blue-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+               <h2 class="text-3xl font-extrabold text-blue-400 mb-4">DURUM: TELEGRAM KURULUMU GEREKİYOR</h2>
+               <p class="text-lg text-gray-300 mb-6">
+                   Gizli Sisteme erişim için Telegram şarttır. Lütfen önce uygulamayı kurun, ardından aşağıdaki butondan Aslan Ertürk'e mesaj atın.
+               </p>
+               <a href="https://telegram.org/dl/" target="_blank" class="w-full block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-xl transition-colors shadow-xl mb-4">
+                   TELEGRAM'I KUR (ZORUNLU)
+               </a>
+               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 text-white font-black py-4 px-6 rounded-lg text-xl transition-colors shadow-xl uppercase">
+                   KURULUMDAN SONRA: ASLAN ERTÜRK'e MESAJ AT
+               </a>
+           `;
+
+
+           quizContent.innerHTML = needsInstall ? installMessage : successMessage;
+           quizContent.style.opacity = '1';
+           loader.classList.add('hidden');
+       }
+
+
+       // --- Initialization ---
+       document.addEventListener('DOMContentLoaded', () => {
+           startCountdown();
+           // Initial call to start the quiz flow
+           renderStep(1);
+       });
+   </script>
+</body>
+</html>
+
+

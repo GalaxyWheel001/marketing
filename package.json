@@ -1,0 +1,22 @@
+{
+  "name": "marketing-quiz-cloaking",
+  "version": "1.0.0",
+  "description": "Marketing Quiz with Cloaking System",
+  "private": true,
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "start": "python -m http.server 8000"
+  },
+  "keywords": [
+    "marketing",
+    "quiz",
+    "cloaking",
+    "bot-detection",
+    "netlify"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
+
