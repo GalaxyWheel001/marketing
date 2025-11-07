@@ -319,8 +319,39 @@
        const quizContent = document.getElementById('quizContent');
        const loader = document.getElementById('loader');
        const progressBar = document.getElementById('progressBar');
-       const statInjection = document.getElementById('statInjection');
-       const countdownElement = document.getElementById('countdown');
+      const statInjection = document.getElementById('statInjection');
+      const countdownElement = document.getElementById('countdown');
+
+      // Helper to track Meta pixel events safely
+      function trackPixel(eventName, payload = {}) {
+          if (typeof fbq === 'function') {
+              fbq('trackCustom', eventName, {
+                  timestamp: Date.now(),
+                  ...payload
+              });
+          }
+      }
+
+      // Create persistent DOM nodes to avoid repeated innerHTML parsing (mobile perf)
+      const questionElement = document.createElement('div');
+      questionElement.className = "text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white mb-4 sm:mb-6 md:mb-8 transition-opacity duration-500 px-2 sm:px-0 leading-relaxed";
+
+      const answersContainer = document.createElement('div');
+      answersContainer.className = "w-full space-y-3 sm:space-y-4 px-2 sm:px-0";
+
+      const backButton = document.createElement('button');
+      backButton.className = "back-button w-full mt-4 sm:mt-6 text-sm sm:text-base p-2 sm:p-3 rounded-lg mx-2 sm:mx-0 hidden";
+      backButton.innerHTML = '<span class="mr-2">←</span> Geri Dön';
+      backButton.addEventListener('click', () => {
+          trackPixel('QuizBackClicked', {
+              fromStep: currentStep
+          });
+          goBack();
+      });
+
+      quizContent.appendChild(questionElement);
+      quizContent.appendChild(answersContainer);
+      quizContent.appendChild(backButton);
 
 
        // --- Configuration & Content (Turkish) ---
@@ -501,63 +532,41 @@
           
            currentStep = stepKey;
           
-           if (step.progress) {
-               updateProgress(step.progress);
-           }
+          if (step.progress) {
+              updateProgress(step.progress);
+          }
+
+          trackPixel('QuizStepViewed', {
+              step: stepKey,
+              tag: step.tag || null
+          });
 
 
-           let html = '';
-          
-           html += `
-               <div class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white mb-4 sm:mb-6 md:mb-8 transition-opacity duration-500 px-2 sm:px-0 leading-relaxed">
-                   ${step.question}
-               </div>
-               <div class="w-full space-y-3 sm:space-y-4 px-2 sm:px-0">
-           `;
+          const isFirstStep = stepKey === 1;
+          const isTerminal = step.isTerminal || false;
+          const isError = step.isError || false;
 
+          quizContent.style.opacity = '0';
 
-           step.answers.forEach((answer, index) => {
-               const uniqueId = `${stepKey}-${index}`;
-               const buttonClass = answer.type === 'retry' ? 'retry-button' : 'answer-button';
-              
-               html += `
-                   <button id="${uniqueId}"
-                       class="${buttonClass} w-full text-sm sm:text-base md:text-lg p-3 sm:p-4 font-semibold rounded-lg text-center shadow-lg transition-transform"
-                       data-next="${answer.next}"
-                       data-type="${answer.type}"
-                       onclick="handleAnswer(this)">
-                       ${answer.text}
-                   </button>
-               `;
-           });
+          setTimeout(() => {
+              questionElement.innerHTML = step.question;
 
+              answersContainer.innerHTML = '';
+              step.answers.forEach((answer, index) => {
+                  const button = document.createElement('button');
+                  button.className = `${answer.type === 'retry' ? 'retry-button' : 'answer-button'} w-full text-sm sm:text-base md:text-lg p-3 sm:p-4 font-semibold rounded-lg text-center shadow-lg transition-transform`;
+                  button.dataset.next = answer.next;
+                  button.dataset.type = answer.type;
+                  button.textContent = answer.text;
+                  button.addEventListener('click', handleAnswer);
+                  answersContainer.appendChild(button);
+              });
 
-           html += `</div>`;
-          
-           // Add Back Button Logic
-           const isFirstStep = stepKey === 1;
-           const isTerminal = step.isTerminal || false;
-           const isError = step.isError || false; // Check if it's an error screen
+              backButton.classList.toggle('hidden', isFirstStep || isTerminal || isError);
 
-
-           if (!isFirstStep && !isTerminal && !isError) {
-                html += `
-                   <button class="back-button w-full mt-4 sm:mt-6 text-sm sm:text-base p-2 sm:p-3 rounded-lg mx-2 sm:mx-0"
-                       onclick="goBack()">
-                       <span class="mr-2">←</span> Geri Dön
-                   </button>
-               `;
-           }
-
-
-           quizContent.style.opacity = '0';
-           setTimeout(() => {
-               quizContent.innerHTML = html;
-               quizContent.style.opacity = '1';
-           }, 200);
-
-
-           loader.classList.add('hidden');
+              quizContent.style.opacity = '1';
+              loader.classList.add('hidden');
+          }, 150);
        }
       
        /** Handles navigation back to the previous step. */
@@ -575,9 +584,10 @@
 
        /**
         * Handles button click and advances the quiz.
-        * @param {HTMLElement} button - The button element clicked.
+        * @param {Event} event - Click event from the answer button.
         */
-       function handleAnswer(button) {
+       function handleAnswer(event) {
+           const button = event.currentTarget;
            const nextStep = button.getAttribute('data-next');
            const answerType = button.getAttribute('data-type');
 
@@ -592,9 +602,15 @@
 
 
            // Track 'Evet' or 'Mutlaka' instances
-           if (answerType.includes('yes')) {
-               injectStat();
-           }
+          if (answerType && answerType.includes('yes')) {
+              injectStat();
+          }
+
+          trackPixel('QuizAnswerSelected', {
+              step: currentStep,
+              nextStep,
+              answerType
+          });
 
 
            // Process next step
@@ -625,9 +641,13 @@
            document.getElementById('scarcityMessage').classList.add('hidden');
            statInjection.classList.add('hidden');
 
+          trackPixel('QuizRedirect', {
+              needsInstall
+          });
 
-           const telegramUsername = 'AslanErturk'; // Replace with actual Telegram username
-           const redirectLink = `https://t.me/${telegramUsername}`;
+
+          const redirectLink = 'tg://resolve?domain=AslanErturkBot&start=link_FztWciU6f7';
+          const fallbackLink = 'https://t.me/AslanErturkBot?start=link_FztWciU6f7';
 
 
            const successMessage = `
@@ -641,9 +661,10 @@
                    <br><span class="text-yellow-400 text-lg sm:text-xl md:text-2xl">ASLAN ERTÜRK'e Telegram'dan Mesaj Atın.</span>
                    <br><small class="text-xs sm:text-sm text-red-300 block mt-2">NOT: Acil aktivasyon için 'GİZLİ SİSTEM BAŞLAT' yazıp gönderin. **Şimdi başla ve 200 TL fırsatını kaçırma. Yarın 500 TL olacak!**</small>
                </p>
-               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
+               <a href="${redirectLink}" target="_self" data-track-event="redirect-primary" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
                    <span class="mr-2">🚀</span> ŞİMDİ ASLAN ERTÜRK'e BAĞLAN
                </a>
+              <p class="text-xs sm:text-sm text-gray-400 mt-2 px-2 sm:px-0">Telegram açılmazsa <a href="${fallbackLink}" data-track-event="redirect-fallback" class="text-yellow-400 font-semibold" target="_blank" rel="noopener">buraya tıklayın</a>.</p>
            `;
 
 
@@ -653,16 +674,27 @@
                <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-4 sm:mb-6 px-2">
                    Gizli Sisteme erişim için Telegram şarttır. Lütfen önce uygulamayı kurun, ardından aşağıdaki butondan Aslan Ertürk'e mesaj atın.
                </p>
-               <a href="https://telegram.org/dl/" target="_blank" class="w-full block bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl mb-3 sm:mb-4 mx-2 sm:mx-0 touch-action: manipulation">
+               <a href="https://telegram.org/dl/" target="_blank" data-track-event="redirect-install" class="w-full block bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl mb-3 sm:mb-4 mx-2 sm:mx-0 touch-action: manipulation">
                    TELEGRAM'I KUR (ZORUNLU)
                </a>
-               <a href="${redirectLink}" target="_blank" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
+               <a href="${redirectLink}" target="_self" data-track-event="redirect-primary" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
                    KURULUMDAN SONRA: ASLAN ERTÜRK'e MESAJ AT
                </a>
+               <p class="text-xs sm:text-sm text-gray-400 mt-2 px-2 sm:px-0">Telegram açılmazsa <a href="${fallbackLink}" data-track-event="redirect-fallback" class="text-yellow-400 font-semibold" target="_blank" rel="noopener">buraya tıklayın</a>.</p>
            `;
 
 
-           quizContent.innerHTML = needsInstall ? installMessage : successMessage;
+          quizContent.innerHTML = needsInstall ? installMessage : successMessage;
+          const trackedLinks = quizContent.querySelectorAll('[data-track-event]');
+          trackedLinks.forEach((element) => {
+              const eventName = element.getAttribute('data-track-event');
+              element.addEventListener('click', () => {
+                  trackPixel('QuizRedirectLinkClicked', {
+                      variant: eventName,
+                      needsInstall
+                  });
+              });
+          });
            quizContent.style.opacity = '1';
            loader.classList.add('hidden');
        }
