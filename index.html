@@ -1,714 +1,387 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Özel Finansal Sistem: Gizli Algoritma</title>
-   
-   <!-- Meta Pixel Code -->
-   <script>
-   !function(f,b,e,v,n,t,s)
-   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-   n.queue=[];t=b.createElement(e);t.async=!0;
-   t.src=v;s=b.getElementsByTagName(e)[0];
-   s.parentNode.insertBefore(t,s)}(window, document,'script',
-   'https://connect.facebook.net/en_US/fbevents.js');
-   fbq('init', '3408938115920115');
-   fbq('track', 'PageView');
-   </script>
-   <noscript><img height="1" width="1" style="display:none"
-   src="https://www.facebook.com/tr?id=3408938115920115&ev=PageView&noscript=1"
-   /></noscript>
-   <!-- End Meta Pixel Code -->
-   
-   <!-- Load Tailwind CSS -->
-   <script src="https://cdn.tailwindcss.com"></script>
-   <style>
-       /* Custom Styling for visual appeal and mobile readiness */
-       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900;800&display=swap');
-       
-       * {
-           -webkit-tap-highlight-color: transparent;
-           -webkit-touch-callout: none;
-       }
-       
-       body {
-           font-family: 'Inter', sans-serif;
-           background-color: #0d0d0d; /* Very dark background */
-           margin: 0;
-           padding: 0;
-           min-height: 100vh;
-           overflow-x: hidden;
-       }
-       
-       .quiz-container {
-           max-width: 450px;
-           width: 100%;
-           margin: 0 auto;
-           background: #1c1c1c; /* Dark card */
-           box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
-           min-height: 100vh;
-           display: flex;
-           flex-direction: column;
-       }
-       
-       /* Mobile optimizations */
-       @media (max-width: 480px) {
-           .quiz-container {
-               max-width: 100%;
-               margin: 0;
-               border-radius: 0;
-               box-shadow: none;
-           }
-       }
-       
-       @media (min-width: 481px) and (max-width: 768px) {
-           .quiz-container {
-               max-width: 90%;
-               margin: 1rem auto;
-               border-radius: 1rem;
-           }
-       }
-       
-       .question-card {
-           min-height: 200px; /* Reduced for mobile */
-           display: flex;
-           flex-direction: column;
-           justify-content: center;
-       }
-       
-       @media (max-width: 480px) {
-           .question-card {
-               min-height: 150px;
-           }
-       }
-       
-       .answer-button {
-           transition: all 0.2s ease-in-out;
-           cursor: pointer;
-           border: 2px solid #FFD700; /* Gold border */
-           color: #FFD700;
-           background-color: #333;
-           font-weight: 700;
-           touch-action: manipulation;
-           -webkit-tap-highlight-color: rgba(255, 215, 0, 0.2);
-           min-height: 56px; /* Minimum touch target size */
-           display: flex;
-           align-items: center;
-           justify-content: center;
-       }
-       
-       .answer-button:hover,
-       .answer-button:active {
-           background-color: #FFD700;
-           color: #1c1c1c;
-           transform: translateY(-2px);
-           box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
-       }
-       
-       @media (max-width: 480px) {
-           .answer-button {
-               font-size: 0.95rem;
-               padding: 1rem 0.75rem;
-               min-height: 52px;
-           }
-       }
-       
-       .back-button, .retry-button {
-           transition: all 0.2s ease-in-out;
-           border: 1px solid #777;
-           color: #aaa;
-           background-color: #2a2a2a;
-           touch-action: manipulation;
-           min-height: 44px;
-       }
-       
-       .back-button:hover, .back-button:active,
-       .retry-button:hover, .retry-button:active {
-           background-color: #444;
-           color: #fff;
-       }
-       
-       .retry-button {
-            border-color: #10B981; /* Green for retry */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Özel Finansal Sistem: Gizli Algoritma</title>
+
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '3408938115920115');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=3408938115920115&ev=PageView&noscript=1" /></noscript>
+    <!-- End Meta Pixel Code -->
+
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styling for visual appeal and mobile readiness */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900;800&display=swap');
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d;
+            /* Very dark background */
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .quiz-container {
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+            background: #1c1c1c;
+            /* Dark card */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            .quiz-container {
+                max-width: 100%;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .quiz-container {
+                max-width: 90%;
+                margin: 1rem auto;
+                border-radius: 1rem;
+            }
+        }
+
+        .question-card {
+            min-height: 200px;
+            /* Reduced for mobile */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @media (max-width: 480px) {
+            .question-card {
+                min-height: 150px;
+            }
+        }
+
+        .answer-button {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: 2px solid #FFD700;
+            /* Gold border */
+            color: #FFD700;
+            background-color: #333;
+            font-weight: 700;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: rgba(255, 215, 0, 0.2);
+            min-height: 56px;
+            /* Minimum touch target size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .answer-button:hover,
+        .answer-button:active {
+            background-color: #FFD700;
+            color: #1c1c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .answer-button {
+                font-size: 0.95rem;
+                padding: 1rem 0.75rem;
+                min-height: 52px;
+            }
+        }
+
+        .back-button,
+        .retry-button {
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #777;
+            color: #aaa;
+            background-color: #2a2a2a;
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+
+        .back-button:hover,
+        .back-button:active,
+        .retry-button:hover,
+        .retry-button:active {
+            background-color: #444;
+            color: #fff;
+        }
+
+        .retry-button {
+            border-color: #10B981;
+            /* Green for retry */
             color: #10B981;
             font-weight: 700;
-       }
-       
-       .retry-button:hover,
-       .retry-button:active {
-           background-color: #10B981;
-           color: #1c1c1c;
-       }
-       
-       .loader {
-           border-top-color: #FFD700;
-           -webkit-animation: spin 1s linear infinite;
-           animation: spin 1s linear infinite;
-       }
-       
-       @keyframes spin {
-           0% { transform: rotate(0deg); }
-           100% { transform: rotate(360deg); }
-       }
-       
-       .progress-bar-fill {
-           transition: width 0.5s ease-in-out;
-       }
-       
-       /* Mobile typography adjustments */
-       @media (max-width: 480px) {
-           h1 {
-               font-size: 1.5rem !important;
-               line-height: 1.3 !important;
-           }
-           
-           h2 {
-               font-size: 1.25rem !important;
-               line-height: 1.3 !important;
-           }
-           
-           .text-3xl {
-               font-size: 1.5rem !important;
-           }
-           
-           .text-2xl {
-               font-size: 1.25rem !important;
-           }
-           
-           .text-xl {
-               font-size: 1.125rem !important;
-           }
-           
-           .text-lg {
-               font-size: 1rem !important;
-           }
-       }
-       
-       /* Mobile spacing adjustments */
-       @media (max-width: 480px) {
-           .quiz-container {
-               padding: 1rem !important;
-           }
-           
-           .mb-6 {
-               margin-bottom: 1rem !important;
-           }
-           
-           .mb-8 {
-               margin-bottom: 1.5rem !important;
-           }
-           
-           .mb-4 {
-               margin-bottom: 1rem !important;
-           }
-           
-           .space-y-4 > * + * {
-               margin-top: 0.75rem !important;
-           }
-       }
-       
-       /* Authority section mobile optimization */
-       @media (max-width: 480px) {
-           .authority-section {
-               flex-direction: column;
-               text-align: center;
-               padding-bottom: 0.75rem !important;
-           }
-           
-           .authority-section svg {
-               margin-right: 0 !important;
-               margin-bottom: 0.5rem;
-           }
-       }
-       
-       /* Scarcity message mobile optimization */
-       @media (max-width: 480px) {
-           #scarcityMessage {
-               padding: 0.75rem !important;
-               font-size: 0.75rem !important;
-           }
-           
-           #countdown {
-               font-size: 1rem !important;
-           }
-       }
-       
-       /* Button text wrapping */
-       .answer-button,
-       .back-button,
-       .retry-button {
-           word-wrap: break-word;
-           white-space: normal;
-           text-align: center;
-           line-height: 1.4;
-       }
-       
-       /* Safe area for notched devices */
-       @supports (padding: max(0px)) {
-           .quiz-container {
-               padding-left: max(1rem, env(safe-area-inset-left));
-               padding-right: max(1rem, env(safe-area-inset-right));
-           }
-       }
-   </style>
+        }
+
+        .retry-button:hover,
+        .retry-button:active {
+            background-color: #10B981;
+            color: #1c1c1c;
+        }
+
+        .loader {
+            border-top-color: #FFD700;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .progress-bar-fill {
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Mobile typography adjustments */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem !important;
+                line-height: 1.3 !important;
+            }
+
+            h2 {
+                font-size: 1.25rem !important;
+                line-height: 1.3 !important;
+            }
+
+            .text-3xl {
+                font-size: 1.5rem !important;
+            }
+
+            .text-2xl {
+                font-size: 1.25rem !important;
+            }
+
+            .text-xl {
+                font-size: 1.125rem !important;
+            }
+
+            .text-lg {
+                font-size: 1rem !important;
+            }
+        }
+
+        /* Mobile spacing adjustments */
+        @media (max-width: 480px) {
+            .quiz-container {
+                padding: 1rem !important;
+            }
+
+            .mb-6 {
+                margin-bottom: 1rem !important;
+            }
+
+            .mb-8 {
+                margin-bottom: 1.5rem !important;
+            }
+
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+
+            .space-y-4>*+* {
+                margin-top: 0.75rem !important;
+            }
+        }
+
+        /* Authority section mobile optimization */
+        @media (max-width: 480px) {
+            .authority-section {
+                flex-direction: column;
+                text-align: center;
+                padding-bottom: 0.75rem !important;
+            }
+
+            .authority-section svg {
+                margin-right: 0 !important;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Scarcity message mobile optimization */
+        @media (max-width: 480px) {
+            #scarcityMessage {
+                padding: 0.75rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            #countdown {
+                font-size: 1rem !important;
+            }
+        }
+
+        /* Button text wrapping */
+        .answer-button,
+        .back-button,
+        .retry-button {
+            word-wrap: break-word;
+            white-space: normal;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Safe area for notched devices */
+        @supports (padding: max(0px)) {
+            .quiz-container {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+            }
+        }
+    </style>
 </head>
-<body>
-
-
-   <!-- Main Quiz Container -->
-   <div id="app" class="quiz-container p-6 sm:p-8 rounded-xl text-white">
-
-
-       <!-- Authority Figure (Aslan Ertürk) Placeholder & Story -->
-       <div class="authority-section flex items-center justify-center mb-4 sm:mb-6 border-b border-yellow-800/50 pb-3 sm:pb-4">
-           <!-- Placeholder for Aslan Ertürk's image/icon -->
-           <svg class="w-10 h-10 sm:w-12 sm:h-12 text-yellow-400 mr-3 sm:mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-           <div class="flex-1 min-w-0">
-               <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">ASLAN ERTÜRK</h2>
-               <p class="text-xs sm:text-sm text-yellow-500 font-semibold italic mt-1">"Algoritmanın Sırrını Çözdüm."</p>
-           </div>
-       </div>
-
-
-       <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-center mb-3 sm:mb-4 text-yellow-400 px-2">
-           GİZLİ SİSTEM ERİŞİM TESTİ
-       </h1>
-       
-       <!-- Scarcity & Dynamic Countdown -->
-       <div id="scarcityMessage" class="text-center mb-3 sm:mb-4 p-2 sm:p-3 bg-red-800/20 rounded-lg mx-2 sm:mx-0">
-           <p class="text-xs sm:text-sm font-bold text-red-400 mb-1">⚠️ SON KONTENJANLAR İÇİN KİŞİSEL KODUNUZU ALIN!</p>
-           <p id="countdown" class="text-base sm:text-lg font-extrabold text-red-300"></p>
-       </div>
-
-
-       <!-- Progress Bar -->
-       <div class="w-full bg-gray-700 rounded-full h-2 sm:h-2.5 mb-4 sm:mb-6 md:mb-8 mx-2 sm:mx-0">
-           <div id="progressBar" class="bg-yellow-500 h-2 sm:h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
-       </div>
-
-
-       <!-- Dynamic Content Area -->
-       <div id="quizContent" class="question-card flex flex-col justify-center items-center text-center">
-           <!-- Content rendered by JavaScript -->
-       </div>
-      
-       <!-- Dynamic Stat/Momentum Injection -->
-       <p id="statInjection" class="text-xs sm:text-sm text-green-400 mt-3 sm:mt-4 h-5 px-2 sm:px-0 text-center"></p>
-
-
-       <!-- Hidden Loader -->
-       <div id="loader" class="hidden flex justify-center items-center py-8">
-           <div class="loader ease-linear rounded-full border-4 border-t-4 h-12 w-12 border-gray-200"></div>
-       </div>
-   </div>
-
-
-   <script>
-       // Global state for the quiz
-       let currentStep = 1;
-       let history = []; // Tracks previous steps for 'Geri Dön'
-       let isRedirecting = false;
-       let quizStartTime = Date.now();
-       const INITIAL_COUNTDOWN_MINUTES = 30; // Simulated timer
-
-
-       // --- DOM Elements ---
-       const quizContent = document.getElementById('quizContent');
-       const loader = document.getElementById('loader');
-       const progressBar = document.getElementById('progressBar');
-      const statInjection = document.getElementById('statInjection');
-      const countdownElement = document.getElementById('countdown');
-
-      // Helper to track Meta pixel events safely
-      function trackPixel(eventName, payload = {}) {
-          if (typeof fbq === 'function') {
-              fbq('trackCustom', eventName, {
-                  timestamp: Date.now(),
-                  ...payload
-              });
-          }
-      }
-
-      // Create persistent DOM nodes to avoid repeated innerHTML parsing (mobile perf)
-      const questionElement = document.createElement('div');
-      questionElement.className = "text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white mb-4 sm:mb-6 md:mb-8 transition-opacity duration-500 px-2 sm:px-0 leading-relaxed";
-
-      const answersContainer = document.createElement('div');
-      answersContainer.className = "w-full space-y-3 sm:space-y-4 px-2 sm:px-0";
-
-      const backButton = document.createElement('button');
-      backButton.className = "back-button w-full mt-4 sm:mt-6 text-sm sm:text-base p-2 sm:p-3 rounded-lg mx-2 sm:mx-0 hidden";
-      backButton.innerHTML = '<span class="mr-2">←</span> Geri Dön';
-      backButton.addEventListener('click', () => {
-          trackPixel('QuizBackClicked', {
-              fromStep: currentStep
-          });
-          goBack();
-      });
-
-      quizContent.appendChild(questionElement);
-      quizContent.appendChild(answersContainer);
-      quizContent.appendChild(backButton);
-
-
-       // --- Configuration & Content (Turkish) ---
-       const QUIZ_FLOW = {
-           1: {
-               // HIGH AFFIRMATION 1: Easy "Yes" for desire.
-               question: "Gelirinizi artırarak kendinize ve ailenize daha konforlu bir hayat sunmak istiyor musunuz?",
-               answers: [
-                   { text: "EVET, KESİNLİKLE!", next: '1B', type: 'yes' },
-                   { text: "Şimdilik hayır.", next: 'error_low_desire', type: 'no' }
-               ],
-               progress: 10,
-               tag: 'easy_affirmation_1'
-           },
-           '1B': {
-               // HIGH AFFIRMATION 2: Easy "Yes" for taking action.
-               question: "Haftada sadece 30 dakikanızı ayırarak, binlerce TL kazanma potansiyeli olan bir sisteme hemen dahil olmaya istekli misiniz?",
-               answers: [
-                   { text: "HEMEN BAŞLAYALIM!", next: '1C', type: 'yes' },
-                   { text: "Emin değilim.", next: 'error_low_desire', type: 'no' }
-               ],
-               progress: 25,
-               tag: 'easy_affirmation_2'
-           },
-           '1C': {
-               // FTD Commitment Check - SOFT/Compliance Safe (Qualification Step 1)
-               // Explicit 200 TL mention + 500 TL scarcity threat.
-               question: "BU FIRSAT SADECE BUGÜNE ÖZEL: Sadece **200 TL** gibi küçük bir başlangıç sermayesi koyarak 10.000 TL ve üstünü kazanmaya hazırsanız 'Evet' deyin. (Şimdi başlamazsanız giriş 500 TL'ye yükselecektir!)",
-               answers: [
-                   { text: "Evet, 200 TL Sermayem Hazır.", next: '1C_Relate', type: 'yes' },
-                   { text: "Şu an sermaye ayıramam.", next: 'error_budget', type: 'no' }
-               ],
-               progress: 45,
-               tag: 'ftd_soft_check'
-           },
-           '1C_Relate': {
-               // NEW: Aslan Ertürk Empathy Interstitial
-               question: 'Aslan Ertürk\'ten Not: "Şu an şüphe duyduğunuzu biliyorum, ben de bu işe ilk başladığımda aynı tereddütleri yaşadım. Ancak bu sistemi çözdükten sonra her şey değişti. Bu yüzden sizi anlıyorum ve artık şüpheyi bırakıp kazanma kararlılığınızı görmek istiyorum."',
-               answers: [
-                   { text: "Şüphe bitti, Yüzde Yüz Kararlıyım!", next: '2A', type: 'yes' }
-               ],
-               progress: 60,
-               tag: 'aslan_empathy_note'
-           },
-           '2A': {
-               // Trust Check (Qualification Step 2) - Authority and Skepticism
-               question: "Aslan Ertürk'ün bu *gizli algoritmanın sırrını çözdüğüne* ve size gösterilen hedefe nişan almanın garanti olduğuna inanıyor musunuz?",
-               answers: [
-                   { text: "Evet, bu fırsata güveniyorum.", next: '2B', type: 'yes' },
-                   { text: "Önce kanıt görmeliyim.", next: '2A_Trust', type: 'no_skeptic' }
-               ],
-               progress: 70,
-               tag: 'trust_check_authority'
-           },
-           '2A_Trust': {
-                // Trust builder using Authority quote (The "Aslan's Story")
-               question: 'Aslan Ertürk\'ten Gelen Mesaj: "Korku, kazancın tek düşmanıdır. Başlamak için sadece güven ve kararlılık gerekir. Sistemi kullanmaya **artık** kararlı mısınız?"',
-               answers: [
-                   { text: "KESİNLİKLE KARARLIYIM!", next: '2B', type: 'yes' },
-                   { text: "Hala tam emin değilim.", next: 'error', type: 'no' }
-               ],
-               progress: 75,
-               tag: 'authority_close'
-           },
-           '2B': {
-               // Demographic Check (For salesman segmentation)
-               question: "Size en uygun yol haritasını oluşturmak için, lütfen hangi yaş grubunda olduğunuzu seçin:",
-               answers: [
-                   { text: "20-35 Yaş (Hızlı Kazanma İsteği)", next: '3', type: 'dem_young' },
-                   { text: "36-55 Yaş (Gelecek Kaygısı)", next: '3', type: 'dem_mid' },
-                   { text: "55+ Yaş (Emeklilik/Ek Gelir)", next: '3', type: 'dem_old' }
-               ],
-               progress: 85,
-               tag: 'demographic_capture'
-           },
-           3: {
-               // High Intent / Final RD Mindset Check (Obsession Check) & Telegram Call-to-Action
-               question: "Kazanmaya başladıktan sonra, parayı çekip bırakmak yerine, kazancınızı katlayarak (RD) sistemi sürekli kullanıp hayatınızı tamamen mi değiştireceksiniz?",
-               answers: [
-                   { text: "Mutlaka! Her seferinde katlayarak devam edeceğim!", next: 'redirect', type: 'yes' },
-                   { text: "Sadece ilk kazancı çekerim.", next: 'error', type: 'no' } // Low recurrence/quality exit
-               ],
-               progress: 95,
-               tag: 'rd_quality'
-           },
-           'error_budget': {
-               // Low FTD budget drop/fail state (NON-TERMINAL - User can retry)
-               question: "Üzgünüz. Bu sistem, sadece **200 TL** gibi küçük bir başlangıç sermayesi (ayrılmış fon) olan yüksek potansiyelli yatırımcılar için rezerve edilmiştir. Bugün bu fırsatı kaçırırsanız giriş ücreti 500 TL olacaktır.",
-               answers: [
-                   { text: "Bütçeyi Ayarladım, Tekrar Dene!", next: '1C', type: 'retry' }
-               ],
-               tag: 'exit_low_budget',
-               isTerminal: false, // Override isTerminal for controlled retry flow
-               isError: true // Mark as error step
-           },
-            'error_low_desire': {
-               // Low FTD budget drop/fail state
-               question: "Bu, sadece *hayatını değiştirmek* zorunda olanların girebileceği çok özel bir gruptur. Sizin için henüz doğru zaman değil.",
-               answers: [],
-               tag: 'exit_low_desire',
-               isTerminal: true
-           },
-           'error': {
-               // Low Intent Drop/Fail State (Not warm enough or no RD desire)
-               question: "Anlıyoruz. Bu fırsat, sadece **sürekli kazanmaya** ve hayatını değiştirmeye *yüzde yüz* kararlı olanlar için tasarlanmıştır. Şimdilik bu size uygun değil.",
-               answers: [],
-               tag: 'exit_low_intent',
-               isTerminal: true
-           }
-       };
-      
-       const STAT_MESSAGES = [
-           "✅ İstatistik: Sistemimizi kullananların %99'u ilk gün 5000 TL'yi aştı!",
-           "🔥 Gizli Algoritma ile dün 112 kullanıcı başlangıç sermayesini 10.000 TL'nin üzerine çıkardı!",
-           "⏳ Kaybedilen her saniye, yüzlerce TL'lik kazanç fırsatını kaçırmak demektir."
-       ];
-
-
-       // --- Utility Functions ---
-      
-       /** Updates the progress bar visually. */
-       function updateProgress(percentage) {
-           progressBar.style.width = `${percentage}%`;
-       }
-      
-       /** Starts the simulated countdown timer */
-       function startCountdown() {
-           const expiry = quizStartTime + (INITIAL_COUNTDOWN_MINUTES * 60 * 1000);
-          
-           const interval = setInterval(() => {
-               const now = Date.now();
-               const remaining = expiry - now;
-
-
-               if (remaining <= 0) {
-                   clearInterval(interval);
-                   countdownElement.textContent = "Süre Doldu! Erişim Kapandı.";
-                   return;
-               }
-
-
-               const minutes = Math.floor(remaining / 60000);
-               const seconds = Math.floor((remaining % 60000) / 1000);
-
-
-               countdownElement.textContent = `Süreniz: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-           }, 1000);
-       }
-
-
-
-
-       /** Injects a positive message to build momentum. */
-       function injectStat() {
-           const randomIndex = Math.floor(Math.random() * STAT_MESSAGES.length);
-           statInjection.textContent = STAT_MESSAGES[randomIndex];
-           statInjection.classList.remove('h-5');
-           setTimeout(() => {
-               statInjection.classList.add('h-5');
-               statInjection.textContent = ''; // Clear after a brief display
-           }, 3000);
-       }
-
-
-       /**
-        * Renders the current step's content to the screen.
-        * @param {string|number} stepKey - Key in the QUIZ_FLOW object.
-        */
-       function renderStep(stepKey) {
-           const step = QUIZ_FLOW[stepKey];
-           if (!step) return;
-
-
-           // Only push to history if not moving to an error state and not rendering an error state
-           if (currentStep !== stepKey && !step.isError && !QUIZ_FLOW[currentStep]?.isError && currentStep !== 1) {
-                history.push(currentStep);
-           }
-          
-           currentStep = stepKey;
-          
-          if (step.progress) {
-              updateProgress(step.progress);
-          }
-
-          trackPixel('QuizStepViewed', {
-              step: stepKey,
-              tag: step.tag || null
-          });
-
-
-          const isFirstStep = stepKey === 1;
-          const isTerminal = step.isTerminal || false;
-          const isError = step.isError || false;
-
-          quizContent.style.opacity = '0';
-
-          setTimeout(() => {
-              questionElement.innerHTML = step.question;
-
-              answersContainer.innerHTML = '';
-              step.answers.forEach((answer, index) => {
-                  const button = document.createElement('button');
-                  button.className = `${answer.type === 'retry' ? 'retry-button' : 'answer-button'} w-full text-sm sm:text-base md:text-lg p-3 sm:p-4 font-semibold rounded-lg text-center shadow-lg transition-transform`;
-                  button.dataset.next = answer.next;
-                  button.dataset.type = answer.type;
-                  button.textContent = answer.text;
-                  button.addEventListener('click', handleAnswer);
-                  answersContainer.appendChild(button);
-              });
-
-              backButton.classList.toggle('hidden', isFirstStep || isTerminal || isError);
-
-              quizContent.style.opacity = '1';
-              loader.classList.add('hidden');
-          }, 150);
-       }
-      
-       /** Handles navigation back to the previous step. */
-       function goBack() {
-           if (history.length > 0) {
-               // Get the last step from history and navigate
-               const previousStep = history.pop();
-               renderStep(previousStep);
-           } else {
-               // If history is empty, ensure we are at step 1
-               renderStep(1);
-           }
-       }
-
-
-       /**
-        * Handles button click and advances the quiz.
-        * @param {Event} event - Click event from the answer button.
-        */
-       function handleAnswer(event) {
-           const button = event.currentTarget;
-           const nextStep = button.getAttribute('data-next');
-           const answerType = button.getAttribute('data-type');
-
-
-           if (isRedirecting) return;
-
-
-           quizContent.style.opacity = '0';
-           loader.classList.remove('hidden');
-          
-           // History is managed in renderStep now for better control on back/forward flow
-
-
-           // Track 'Evet' or 'Mutlaka' instances
-          if (answerType && answerType.includes('yes')) {
-              injectStat();
-          }
-
-          trackPixel('QuizAnswerSelected', {
-              step: currentStep,
-              nextStep,
-              answerType
-          });
-
-
-           // Process next step
-           setTimeout(() => {
-               if (nextStep === 'redirect') {
-                   handleRedirect(answerType === 'yes_warn');
-               } else if (nextStep.startsWith('error')) {
-                   // Render error state, history management happens inside renderStep
-                   renderStep(nextStep);
-               } else {
-                   renderStep(nextStep);
-               }
-           }, 500);
-       }
-
-
-       /**
-        * Final step: Redirect to Telegram channel with user-warming message.
-        * @param {boolean} needsInstall - Whether the user needs to install Telegram first.
-        */
-       function handleRedirect(needsInstall) {
-           isRedirecting = true;
-           updateProgress(100);
-           history = []; // Clear history
-
-
-           // Hide scarcity message and clean up stat injection
-           document.getElementById('scarcityMessage').classList.add('hidden');
-           statInjection.classList.add('hidden');
-
-          trackPixel('QuizRedirect', {
-              needsInstall
-          });
-
-
-          const redirectLink = 'tg://resolve?domain=AslanErturkBot&start=link_FztWciU6f7';
-          const fallbackLink = 'https://t.me/AslanErturkBot?start=link_FztWciU6f7';
-
-
-           const successMessage = `
-               <svg class="w-12 h-12 sm:w-16 sm:h-16 text-green-400 mx-auto mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-               <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-yellow-400 mb-3 sm:mb-4 px-2">ONAYLANDINIZ! GİZLİ KODUNUZ HAZIR.</h2>
-               <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-4 sm:mb-6 px-2">
-                   Tebrikler, **Yüksek Potansiyelli Yatırımcı** olarak onaylandınız. Kazanma yol haritasına erişiminiz sağlandı.
-               </p>
-               <p class="text-base sm:text-lg md:text-xl font-black text-white mb-4 sm:mb-6 md:mb-8 bg-gray-700/50 p-3 sm:p-4 rounded-lg border-2 border-yellow-400 mx-2 sm:mx-0">
-                   <span class="text-red-400">🚨 SON GÖREV:</span>
-                   <br><span class="text-yellow-400 text-lg sm:text-xl md:text-2xl">ASLAN ERTÜRK'e Telegram'dan Mesaj Atın.</span>
-                   <br><small class="text-xs sm:text-sm text-red-300 block mt-2">NOT: Acil aktivasyon için 'GİZLİ SİSTEM BAŞLAT' yazıp gönderin. **Şimdi başla ve 200 TL fırsatını kaçırma. Yarın 500 TL olacak!**</small>
-               </p>
-               <a href="${redirectLink}" target="_self" data-track-event="redirect-primary" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
-                   <span class="mr-2">🚀</span> ŞİMDİ ASLAN ERTÜRK'e BAĞLAN
-               </a>
-              <p class="text-xs sm:text-sm text-gray-400 mt-2 px-2 sm:px-0">Telegram açılmazsa <a href="${fallbackLink}" data-track-event="redirect-fallback" class="text-yellow-400 font-semibold" target="_blank" rel="noopener">buraya tıklayın</a>.</p>
-           `;
-
-
-           const installMessage = `
-               <svg class="w-12 h-12 sm:w-16 sm:h-16 text-blue-400 mx-auto mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-               <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-blue-400 mb-3 sm:mb-4 px-2">DURUM: TELEGRAM KURULUMU GEREKİYOR</h2>
-               <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-4 sm:mb-6 px-2">
-                   Gizli Sisteme erişim için Telegram şarttır. Lütfen önce uygulamayı kurun, ardından aşağıdaki butondan Aslan Ertürk'e mesaj atın.
-               </p>
-               <a href="https://telegram.org/dl/" target="_blank" data-track-event="redirect-install" class="w-full block bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl mb-3 sm:mb-4 mx-2 sm:mx-0 touch-action: manipulation">
-                   TELEGRAM'I KUR (ZORUNLU)
-               </a>
-               <a href="${redirectLink}" target="_self" data-track-event="redirect-primary" class="w-full block bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-black py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors shadow-xl uppercase mx-2 sm:mx-0 touch-action: manipulation">
-                   KURULUMDAN SONRA: ASLAN ERTÜRK'e MESAJ AT
-               </a>
-               <p class="text-xs sm:text-sm text-gray-400 mt-2 px-2 sm:px-0">Telegram açılmazsa <a href="${fallbackLink}" data-track-event="redirect-fallback" class="text-yellow-400 font-semibold" target="_blank" rel="noopener">buraya tıklayın</a>.</p>
-           `;
-
-
-          quizContent.innerHTML = needsInstall ? installMessage : successMessage;
-          const trackedLinks = quizContent.querySelectorAll('[data-track-event]');
-          trackedLinks.forEach((element) => {
-              const eventName = element.getAttribute('data-track-event');
-              element.addEventListener('click', () => {
-                  trackPixel('QuizRedirectLinkClicked', {
-                      variant: eventName,
-                      needsInstall
-                  });
-              });
-          });
-           quizContent.style.opacity = '1';
-           loader.classList.add('hidden');
-       }
-
-
-       // --- Initialization ---
-       document.addEventListener('DOMContentLoaded', () => {
-           startCountdown();
-           // Initial call to start the quiz flow
-           renderStep(1);
-       });
-   </script>
+
+<body
+    class="bg-[#d7e2c6] min-h-screen flex items-center justify-center p-4 font-sans antialiased relative overflow-hidden">
+
+    <!-- Telegram Doodle Background Pattern -->
+    <div class="absolute inset-0 pointer-events-none"
+        style="background-color: #d7e2c6; background-image: url('https://raw.githubusercontent.com/telegramdesktop/tdesktop/master/Telegram/Resources/art/bg_initial.jpg'); background-size: cover; background-position: center; opacity: 0.8;">
+    </div>
+    <!-- Fallback Overlay for texture -->
+    <div class="absolute inset-0 opacity-30 pointer-events-none"
+        style="background-image: radial-gradient(#798968 1px, transparent 1px); background-size: 32px 32px;">
+    </div>
+
+    <!-- Main Card -->
+    <div
+        class="bg-white rounded-[32px] shadow-2xl w-full max-w-[400px] p-8 flex flex-col items-center text-center relative z-10 mx-auto transform transition-all hover:scale-[1.01] duration-500">
+
+        <!-- Avatar Container -->
+        <div class="relative mb-5 group">
+            <div
+                class="w-[120px] h-[120px] rounded-full overflow-hidden shadow-lg border-4 border-white ring-2 ring-gray-100">
+                <img src="./avatar.jpg" alt="Aslan Ertürk"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            </div>
+            <!-- Online Status Dot -->
+            <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-4 border-white rounded-full shadow-sm"
+                title="Online"></div>
+        </div>
+
+        <!-- Name & Verified Badge -->
+        <div class="flex items-center justify-center gap-1.5 mb-1">
+            <h1 class="text-[24px] font-bold text-[#1c1c1c] leading-tight tracking-tight">
+                Aslan Ertürk
+            </h1>
+            <!-- Verified Badge (Blue Check) -->
+            <svg class="w-6 h-6 text-[#3390ec] fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12.0002 2.00024L14.5602 3.06024L17.1202 2.53024L18.6602 4.58024L21.2202 5.64024L21.2202 8.20024L23.2702 10.2502L22.7402 12.8102L23.2702 15.3702L21.2202 17.4202L21.2202 19.9802L18.6602 21.0402L17.1202 23.0902L14.5602 22.5602L12.0002 23.6202L9.44024 22.5602L6.88024 23.0902L5.34024 21.0402L2.78024 19.9802L2.78024 17.4202L0.730244 15.3702L1.26024 12.8102L0.730244 10.2502L2.78024 8.20024L2.78024 5.64024L5.34024 4.58024L6.88024 2.53024L9.44024 3.06024L12.0002 2.00024ZM10.9402 16.3402L17.5402 9.74024L16.1202 8.32024L10.9402 13.5102L7.88024 10.4502L6.46024 11.8702L10.9402 16.3402Z" />
+            </svg>
+        </div>
+
+        <!-- Subscriber Count -->
+        <p class="text-[#707579] text-[14px] font-medium mb-6 tracking-wide">
+            17 464 subscribers
+        </p>
+
+        <!-- Description -->
+        <div class="text-[#1c1c1c] text-[15px] leading-relaxed mb-8 px-1 font-normal text-left">
+            <p class="mb-3">Yıllarca araştırdım ve bu berbat ekonomiden çıkış yolu buldum. Bulduğum sistem ve yarattığım
+                uygulamayla 6 günde aylık kazancımı 10-a katladım. Sadece ben değil:</p>
+
+            <div class="space-y-1 mb-4 pl-1">
+                <div>✅ 1500+ kişi borçlarından kurtuldu</div>
+                <div>🔥 6255 kişi kendisine araba aldı</div>
+                <div>✨ 4300 kişi eşiyle mutlu hayata kavuştu</div>
+            </div>
+
+            <p>Sen de bunlar için bana ulaş</p>
+        </div>
+
+        <!-- View in Telegram Button -->
+        <a href="tg://resolve?domain=AslanErturkBot&start=link_FztWciU6f7"
+            class="w-full block bg-[#3390ec] hover:bg-[#2884df] active:bg-[#1d78d5] text-white font-bold py-4 px-6 rounded-xl text-[15px] uppercase tracking-wider transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 mb-4 relative overflow-hidden group">
+            <span class="relative z-10 flex items-center justify-center">
+                VIEW IN TELEGRAM
+            </span>
+            <!-- Button Shine Effect -->
+            <div
+                class="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0">
+            </div>
+        </a>
+
+        <!-- Fallback Link -->
+        <a href="https://t.me/AslanErturkBot?start=link_FztWciU6f7" target="_blank" rel="noopener"
+            class="text-[#707579] hover:text-[#3390ec] text-xs font-medium transition-colors py-2">
+            Open in Web
+        </a>
+
+    </div>
+
+    <style>
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <script>
+        // Simple pixel tracking for page view
+        if (typeof fbq === 'function') {
+            fbq('track', 'ViewContent', {
+                content_name: 'TelegramLanding_Polished'
+            });
+        }
+    </script>
 </body>
-</html>
-
-
-
